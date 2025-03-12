@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Quotation PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        iframe {
+            width: 90%;
+            height: 600px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h2>Quotation PDF</h2>
+    <% if (pdfUrl) { %>
+        <iframe src="<%= pdfUrl %>" frameborder="0"></iframe>
+    <% } else { %>
+        <p>No PDF available.</p>
+    <% } %>
+</body> 
+</html>

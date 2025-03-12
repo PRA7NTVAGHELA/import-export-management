@@ -1,0 +1,284 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* CSS Variables for Consistency */
+:root {
+    --primary: #D5C7A3; /* Soft brown */
+    --success: #BDB395; /* Muted greenish-brown */
+    --danger: #E74C3C; /* Red */
+    --warning: #F2E2B1; /* Light yellow */
+    --bg-dark: #F6F0F0; /* Light background */
+    --container-bg: #F2E2B1; /* Slightly darker background */
+    --gray: #BDB395; /* Soft gray */
+    --text-light: #2A2A3D; /* Dark text */
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 20px;
+    --border-radius: 8px; /* Modern rounded look */
+}
+
+/* Base Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-dark);
+    margin: 0;
+    padding: var(--spacing-lg);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    color: var(--text-light);
+}
+
+/* Main Container */
+.container {
+    max-width: 1200px;
+    width: 100%;
+    background: var(--container-bg);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+/* Sliding Form */
+#showFormBtn {
+    background: linear-gradient(135deg, var(--primary), #BDB395);
+    color: var(--text-light);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+#showFormBtn:hover {
+    background: linear-gradient(135deg, #BDB395, var(--primary));
+    transform: scale(1.05);
+}
+
+#unitFormContainer {
+    position: fixed;
+    top: 50%;
+    right: -320px;
+    transform: translateY(-50%);
+    width: 300px;
+    background: var(--container-bg);
+    padding: var(--spacing-lg);
+    box-shadow: -3px 0 15px rgba(0, 0, 0, 0.4);
+    border-radius: var(--border-radius);
+    transition: right 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+#unitFormContainer.active {
+    right: var(--spacing-lg);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+input, select, textarea {
+    padding: var(--spacing-sm);
+    border: 1px solid var(--gray);
+    border-radius: var(--border-radius);
+    width: 100%;
+    font-size: 14px;
+    background-color: #F6F0F0;
+    color: var(--text-light);
+    transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+}
+
+textarea {
+    resize: none;
+    height: 60px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+}
+
+button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-light);
+    transition: transform 0.2s ease, background 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button[type="submit"] {
+    background-color: var(--success);
+}
+
+#closeFormBtn {
+    background-color: var(--danger);
+}
+
+/* Top Section */
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.search-box input {
+    padding: var(--spacing-sm);
+    border: 1px solid var(--gray);
+    border-radius: var(--border-radius);
+    background-color: #F6F0F0;
+    color: var(--text-light);
+    transition: border-color 0.3s ease;
+}
+
+.search-box input:focus {
+    border-color: var(--primary);
+}
+
+/* Buttons */
+.btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    color: var(--text-light);
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.export-btn {
+    background-color: var(--warning);
+}
+
+.add-btn {
+    background-color: var(--success);
+}
+
+.import-btn {
+    background-color: var(--primary);
+}
+
+.export-btn:hover { background-color: #D5C7A3; }
+.add-btn:hover { background-color: #BDB395; }
+.import-btn:hover { background-color: #D5C7A3; }
+
+/* Table Styling */
+.table-container {
+    overflow-x: auto;
+    margin-top: var(--spacing-lg);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--container-bg);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+th, td {
+    padding: var(--spacing-md) 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--gray);
+}
+
+th {
+    background-color: #F6F0F0;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+tr:nth-child(even) {
+    background-color: #F2E2B1;
+}
+
+tr:hover {
+    background-color: #D5C7A3;
+    transition: background-color 0.2s ease;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.edit-btn, .delete-btn {
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    color: var(--text-light);
+    font-weight: 500;
+    transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.edit-btn {
+    background-color: var(--primary);
+}
+
+.delete-btn {
+    background-color: var(--danger);
+}
+
+.edit-btn:hover {
+    background-color: #BDB395;
+    transform: translateY(-2px);
+}
+
+.delete-btn:hover {
+    background-color: #C0392B;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: var(--spacing-md);
+    }
+    .container {
+        padding: var(--spacing-md);
+    }
+    #unitFormContainer {
+        width: 100%;
+        max-width: 280px;
+        right: -100%;
+    }
+    #unitFormContainer.active {
+        right: 0;
+    }
+    .top-section {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    .table-container {
+        font-size: 12px;
+    }
+}

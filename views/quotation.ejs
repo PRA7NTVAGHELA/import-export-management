@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUOTATION</title>
+    <link rel="stylesheet" href="/CSS/quotation.css">
+</head>
+<body>
+    
+    <div id="quotationFormContainer">
+        <form id="quotationForm" action="/quotation/create" method="POST">
+            <button type="button" id="closeFormBtn">&times;</button>
+            <div>
+                <label for="date">Date:</label>
+                <input type="date" name="date" required>
+            
+                <label for="consignee_id">Consignee Name:</label>
+                <select name="consignee_id" id="consignee_id" required>
+                    <option value="">Select Consignee</option>
+                    <% consignees.forEach(consignee => { %>
+                        <option value="<%= consignee.id %>" data-address="<%= consignee.address %>"><%= consignee.name %></option>
+                    <% }); %>
+                </select>
+            
+                <label for="consignee_address">Consignee Address:</label>
+                <textarea name="consignee_address" id="consignee_address" required readonly disabled></textarea>
+            </div>
+            
+            <div>
+                <label for="country_id">Country:</label>
+                <select name="country_id" id="countrySelect" required>
+                    <option value="">Select Country</option>
+                    <% countries.forEach(country => { %>
+                        <option value="<%= country.id %>"><%= country.country_name %></option>
+                    <% }); %>
+                </select>
+        
+                <label for="port_id">Port Destination:</label>
+                <select name="port_id" id="portSelect" required>
+                    <option value="">Select Port</option>
+                    <% ports.forEach(port => { %>
+                        <option value="<%= port.id %>" data-country="<%= port.country_id %>"><%= port.portName %></option>
+                    <% }); %>
+                </select>
+            </div>
+            
+            <div>
+                <label for="currency_id">Currency:</label>
+                <select name="currency_id" required>
+                    <% currencies.forEach(currency => { %>
+                        <option value="<%= currency.id %>"><%= currency.currency %></option>
+                    <% }); %>
+                </select>
+            
+                <label for="conversion_rate">Conversion Rate:</label>
+                <input type="number" step="0.01" name="conversion_rate" required>
+            </div>
+            
+            <div id="productContainer">
+                <div class="product-block">
+    
+                    <div>
+                        <label for="product_id">Select Product:</label>
+                        <select class="productSelect" name="product_id">
+                            <option value="">-- Select Product --</option>
+                            <% products.forEach(product => { %>
+                                <option value="<%= product.id %>-0"><%= product.productName %></option>
+                                <% product.variants.forEach((variant, index) => { %>
+                                    <option value="<%= product.id %>-<%= variant.id %>">
+                                        &nbsp;&nbsp;&nbsp;↳<%= product.productName %>-<%= variant.name %>
+                                    </option>
+                                <% }); %>
+                            <% }); %>
+                        </select>
+                
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" step="1" name="quantity" class="quantity" required>
+                
+                        <label for="price">Price</label>
+                        <input type="number" step="1" name="price" class="price" required>
+                
+                        <label for="totalPrice">Total</label>
+                        <input type="number" step="1" name="total" class="totalPrice" required readonly disabled>
+                    </div>
+    
+                    <div>
+                        <label for="unit_id">Unit:</label>
+                        <select name="unit_id" class="unitSelect" required>
+                            <% units.forEach(unit => { %>
+                                <option value="<%= unit.id %>"><%= unit.orderUnit %> (<%= unit.packingUnit %>)</option>
+                            <% }); %>
+                        </select>
+                
+                        <label for="netWeight">Net Weight:</label>
+                        <input type="number" step="0.01" name="netWeight" class="netWeight" required readonly disabled>
+                
+                        <label for="grossWeight">Gross Weight:</label>
+                        <input type="number" step="0.01" name="grossWeight" class="grossWeight" required readonly disabled>
+                
+                        <label for="totalPackage">Total Package:</label>
+                        <input type="number" name="totalPackage" class="totalPackage" required>
+                
+                        <label for="package_id">Package:</label>
+                        <select name="package_id" class="packageSelect" required>
+                            <% packages.forEach(pack => { %>
+                                <option value="<%= pack.id %>" 
+                                    data-net-weight="<%= pack.netWeight %>" 
+                                    data-gross-weight="<%= pack.grossWeight %>">
+                                    <%= pack.netWeight %> (<%= pack.grossWeight %>)
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+            
+                    <button type="button" class="removeProductBtn">Remove</button>
+                </div>
+            </div>
+            
+            <button type="button" id="addProductBtn">Add Product</button>
+            <div>
+                
+                <label for="totalNetWeight">Total Net Weight:</label>
+                <input type="number" step="0.01" name="totalNetWeight" required readonly disabled>
+            
+                <label for="totalGrossWeight">Total Gross Weight:</label>
+                <input type="number" step="0.01" name="totalGrossWeight" required readonly disabled>
+            
+                <label for="total_native">Total (Native Currency):</label>
+                <input type="number" step="0.01" name="total_native" required readonly disabled>
+            
+                <label for="total_inr">Total (INR):</label>
+                <input type="number" step="0.01" name="total_inr" required readonly disabled>
+            </div>
+        
+            <button type="submit">Create Quotation</button>
+        </form>     
+    </div>
+
+    <%- include('partial/_ListQuotation',{quotations : quotations}) %>
+
+<script>
+        document.getElementById('consignee_id').addEventListener('change', function () {
+            let selectedOption = this.options[this.selectedIndex];
+            document.getElementById('consignee_address').value = selectedOption.getAttribute('data-address') || '';
+        });
+
+        const currencySelect = document.querySelector("[name='currency_id']");
+        const conversionRateInput = document.querySelector("[name='conversion_rate']");
+
+        
+        const allCurrencies = <%- JSON.stringify(currencies) %>;
+    
+        document.querySelector("[name='currency_id']").addEventListener("change", function () {
+            let selectedCurrency = this.value;
+            let currencyData = allCurrencies.find(c => c.currency === selectedCurrency);
+            
+            if (currencyData) {
+                document.querySelector("[name='conversion_rate']").value = currencyData.conversion_rate;
+            }
+        });
+
+        document.getElementById('addProductBtn').addEventListener('click', function () {
+        let productContainer = document.getElementById('productContainer');
+        let firstProductBlock = document.querySelector('.product-block');
+        let newProductBlock = firstProductBlock.cloneNode(true);
+
+        // Clear input values in the cloned block
+        newProductBlock.querySelectorAll('input').forEach(input => input.value = '');
+        newProductBlock.querySelector('.totalPrice').setAttribute('readonly', true);
+
+
+        productContainer.appendChild(newProductBlock);
+
+        attachEventListeners(newProductBlock);
+
+        newProductBlock.querySelector('.removeProductBtn').addEventListener('click', function () {
+            newProductBlock.remove();
+        });
+    });
+
+
+    function attachEventListeners(productBlock) {
+        let quantityInput = productBlock.querySelector('.quantity');
+        let priceInput = productBlock.querySelector('.price');
+        let totalPriceInput = productBlock.querySelector('.totalPrice');
+        let packageSelect = productBlock.querySelector('.packageSelect');
+        let totalPackageInput = productBlock.querySelector('.totalPackage');
+        let netWeightInput = productBlock.querySelector('.netWeight');
+        let grossWeightInput = productBlock.querySelector('.grossWeight');
+
+        function calculate() {
+            let quantity = quantityInput.value || 0;
+            let price = priceInput.value || 0;
+            totalPriceInput.value = (quantity * price).toFixed(2);
+        }
+
+        function updateWeights() {
+            let selectedOption = packageSelect.options[packageSelect.selectedIndex];
+            let totalPackage = totalPackageInput.value || 1; // Default to 1 if empty
+
+            let netWeight = selectedOption.getAttribute("data-net-weight") || 0;
+            let grossWeight = selectedOption.getAttribute("data-gross-weight") || 0;
+
+            netWeightInput.value = (netWeight * totalPackage).toFixed(2);
+            grossWeightInput.value = (grossWeight * totalPackage).toFixed(2);
+
+            calculateTotals();
+        }
+
+        quantityInput.addEventListener('input', calculate);
+        priceInput.addEventListener('input', calculate);
+        packageSelect.addEventListener('change', updateWeights);
+        totalPackageInput.addEventListener('input', updateWeights);
+    }
+
+    attachEventListeners(document.querySelector('.product-block'));
+
+    function calculateTotals() {
+    let totalNetWeight = 0;
+    let totalGrossWeight = 0;
+    let totalNative = 0;
+
+    document.querySelectorAll(".product-block").forEach(productBlock => {
+        let netWeight = parseFloat(productBlock.querySelector(".netWeight")?.value) || 0;
+        let grossWeight = parseFloat(productBlock.querySelector(".grossWeight")?.value) || 0;
+        let totalPrice = parseFloat(productBlock.querySelector(".totalPrice")?.value) || 0;
+
+        totalNetWeight += netWeight;
+        totalGrossWeight += grossWeight;
+        totalNative += totalPrice;
+    });
+
+            let conversionRate = parseFloat(document.querySelector("input[name='conversion_rate']")?.value) || 1;
+            let totalINR = totalNative * conversionRate;
+
+            document.querySelector("input[name='totalNetWeight']").value = totalNetWeight.toFixed(2);
+            document.querySelector("input[name='totalGrossWeight']").value = totalGrossWeight.toFixed(2);
+            document.querySelector("input[name='total_native']").value = totalNative.toFixed(2);
+            document.querySelector("input[name='total_inr']").value = totalINR.toFixed(2);
+        }
+
+        // Event listener for input changes (works on dynamic elements)
+        document.addEventListener("input", function(event) {
+            if (event.target.matches(".quantity, .price, .totalPackage, .packageSelect, .netWeight, .grossWeight, .totalPrice, input[name='conversion_rate']")) {
+                calculateTotals();
+            }
+        });
+
+        
+        const productContainer = document.getElementById("productContainer");
+        const observer = new MutationObserver(() => {
+            calculateTotals();
+        });
+
+        observer.observe(productContainer, { childList: true, subtree: true });
+
+        document.addEventListener("DOMContentLoaded", calculateTotals);
+
+        document.querySelector("form").addEventListener("submit", function() {
+            document.querySelectorAll("input[disabled]").forEach(input => {
+                input.removeAttribute("disabled");
+            });
+        });
+
+        
+        
+</script>
+       
+    <script src="/JS/quotationScript.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<style>
+ .floating-dropdown {
+        background: white;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        z-index: 1000;
+        min-width: 150px;
+        padding: 5px 0;
+        position: absolute;
+    }
+
+    .floating-dropdown a {
+        display: block;
+        padding: 8px 12px;
+        text-decoration: none;
+        color: black;
+        font-size: 14px;
+    }
+
+    .floating-dropdown a:hover {
+        background: #f1f1f1;
+    }
+</style>
+
+<div class="quotation-container">
+    <div class="quotation-header">
+        <h2>Quotation List</h2>
+        <div class="button-group">
+            <button id="toggleFormBtn">Create New Quotation</button>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="quotation-table">
+            <thead>
+                <tr>
+                    <th>Actions</th>
+                    <th>Doc</th>
+                    <th>Quotation No.</th>
+                    <th>Consignee</th>
+                    <th>Products</th>
+                    <th>Country</th>
+                    <th>Port</th>
+                    <th>Amount</th>
+                    <th>Balance Due</th>
+                    <th>Conv. Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% quotations.forEach((quotation) => { %>
+                    <tr data-id="<%= quotation.id %>">
+                        <td style="position: relative;">
+                            <button class="btn btn-primary btn-sm action-btn">Action</button>
+                        
+                        </td>
+
+                        <td><i class="doc-icon">PDF</i></td>
+                        <td><%= quotation.id %></td>
+                        <td><%= quotation.Consignee.name %></td>
+                        <td>
+                            <% quotation.QuotationProducts.forEach((product, index) => { %>
+                                <%= product.Product.productName %> (<%= product.quantity %>)
+                                <% if (index < quotation.QuotationProducts.length - 1) { %>, <% } %>
+                            <% }); %>
+                        </td>
+                        <td><%= quotation.Country.country_name %></td>
+                        <td><%= quotation.Port.portName %></td>
+                        <td><%= quotation.total_native %>(<%= quotation.Currency.currency %>)</td>
+                        <td><%= quotation.total_native %> (USD)</td>
+                        <td><%= quotation.conversion_rate %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</div>

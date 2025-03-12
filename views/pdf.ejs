@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotation PDF</title>
+    <style>
+        :root {
+            --primary-text: #1a1a1a;
+            --heading-color: #222;
+            --border-color: #ddd;
+            --highlight-bg: #eef5f9;
+            --spacing-sm: 8px;
+            --spacing-md: 10px;
+            --spacing-lg: 20px;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: var(--spacing-lg);
+            color: var(--primary-text);
+            font-size: 14px;
+            position: relative;
+        }
+
+        /* Logo container styling */
+        .logo-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 100px; /* Adjust based on your logo size */
+            height: auto;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--heading-color);
+            text-transform: uppercase;
+            margin-bottom: var(--spacing-md);
+            margin-top: 60px; /* Adjusted to accommodate logo and text */
+        }
+
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 80px; /* Space for logo and title */
+        }
+
+        .header-table td {
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-md);
+            vertical-align: top;
+        }
+
+        .header-table .highlight {
+            background-color: var(--highlight-bg);
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .header-table .highlight:hover {
+            background-color: #d9e8f1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--spacing-md);
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: var(--spacing-sm);
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        td:focus, th:focus {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+        }
+
+        th:hover, td:hover {
+            background-color: #f9f9f9;
+            transition: background-color 0.3s ease;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: center;
+            margin-top: var(--spacing-lg);
+            font-size: 12px;
+            color: #444;
+        }
+
+        .summary-table {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .summary-table td {
+            border: none;
+            padding: var(--spacing-md);
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                margin: var(--spacing-md);
+                font-size: 12px;
+            }
+            .logo-container {
+                width: 80px;
+                top: 5px;
+                left: 5px;
+            }
+            h2 {
+                font-size: 18px;
+                margin-top: 50px;
+            }
+            .header-table {
+                margin-top: 60px;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1e1e1e;
+                color: #e0e0e0;
+            }
+            th {
+                background-color: #333;
+                color: #fff;
+            }
+            td {
+                border-color: #444;
+            }
+            .highlight {
+                background-color: #2a3b4c;
+            }
+            .logo-container img {
+                filter: brightness(1.2);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Logo Container -->
+    <div class="logo-container">
+        <img src="../public/images/logo.ong.jpg" alt="Company Logo">
+    </div>
+
+    <h2>Quotation</h2>
+
+    <!-- Exporter & Quotation Details -->
+    <table class="header-table">
+        <tr>
+            <td>
+                <strong>EXPORTER:</strong><br>
+                1ST SERVER<br>
+                IN TRADE CENTER,<br>
+                ROAD, RAJKOT 360001
+            </td>
+            <td>
+                <strong>QUOTATION NO:</strong> 6<br>
+                <strong>DATE:</strong> 2025-03-11<br>
+                <strong>GSTIN:</strong> 12ABCDE1234FZ5<br>
+                <strong>FSSAI NO.:</strong> 414126
+            </td>
+        </tr>
+        <tr class="highlight">
+            <td>
+                <strong>CONSIGNEE:</strong> John Doe<br>
+                <strong>ADDRESS:</strong> 123 Main St, Los Angeles
+            </td>
+            <td>
+                <strong>COUNTRY OF ORIGIN:</strong> INDIA<br>
+                <strong>COUNTRY OF FINAL DESTINATION:</strong> CHINA
+            </td>
+        </tr>
+    </table>
+
+    <!-- Product Details (unchanged for now) -->
+    <h3>Product Details</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>SR. NO.</th>
+                <th>MARKING</th>
+                <th>NO. OF PACKAGES</th>
+                <th>DESCRIPTION OF GOODS</th>
+                <th>H.S. CODE</th>
+                <th>QTY. TOTAL</th>
+                <th>NET W.T.</th>
+                <th>GROSS W.T.</th>
+                <th>RATE (USD)</th>
+                <th>TOTAL (USD)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Placeholder for dynamic data -->
+            <tr>
+                <td>1</td>
+                <td>Product A</td>
+                <td>10</td>
+                <td>Sample Goods</td>
+                <td>1234</td>
+                <td>100 units</td>
+                <td>50 kg</td>
+                <td>55 kg</td>
+                <td>10</td>
+                <td>1000</td>
+            </tr>
+        </tbody>
+        <tr class="highlight">
+            <td colspan="5" style="text-align: right;"><strong>Total</strong></td>
+            <td>100</td>
+            <td>50</td>
+            <td>55</td>
+            <td>Subtotal</td>
+            <td>1000</td>
+        </tr>
+    </table>
+
+    <h3>Packing & Payment Details</h3>
+
+    <table class="summary-table">
+        <tr>
+            <td><strong>Total Net Weight:</strong> 50 kg</td>
+            <td><strong>Total Gross Weight:</strong> 55 kg</td>
+            <td><strong>Amount in Words:</strong> One Thousand USD</td>
+        </tr>
+    </table>
+
+    <table class="summary-table">
+        <tr>
+            <td colspan="3"><strong>Declaration:</strong> We hereby declare all documents and quality tested.</td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        <p><strong>Customer Care:</strong> 9723345023 | ✉️ vgqa00@gmail.com</p>
+    </div>
+
+</body>
+</html>

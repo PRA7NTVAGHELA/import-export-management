@@ -1,0 +1,183 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #F6F0F0;
+}
+
+/* Tab Menu */
+.tab-menu {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    background: #BDB395;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.tab-menu li {
+    flex: 1;
+    text-align: center;
+}
+
+.tab-menu a {
+    display: block;
+    padding: 10px 15px;
+    color: white;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.tab-menu a:hover {
+    background: #D5C7A3;
+}
+
+.tab-menu a.active {
+    background: #BDB395;
+}
+
+/* Form Styling */
+.product-form {
+    max-width: 1080px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #F2E2B1;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Sections */
+#productDetailsSection, #advancedDetailsSection {
+    padding: 20px;
+    border-radius: 5px;
+    background: #F6F0F0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: none; 
+}
+
+.active {
+    display: block;
+}
+
+#productDetailsSection.active {
+    display: block; 
+}
+
+#advancedDetailsSection.active {
+    display: block;
+}
+
+/* Input and Labels */
+label {
+    display: block;
+    font-weight: bold;
+    margin: 10px 0 5px;
+    color: #2A2A3D;
+}
+
+input, select, textarea {
+    width: 90%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #BDB395;
+    border-radius: 5px;
+    background: rgb(246, 240, 240);
+    color: #2A2A3D;
+    font-size: 14px;
+    transition: border 0.3s ease-in-out;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #BDB395;
+}
+
+/* Buttons */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.button-container button {
+    padding: 10px 15px;
+    border: none;
+    background: #D5C7A3;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.button-container button:hover {
+    background: #BDB395;
+}
+
+button#prevBtn {
+    background: #BDB395;
+}
+
+button#prevBtn:hover {
+    background: #A39A87;
+}
+
+/* Layout Structure */
+.product-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.details {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.details div {
+    flex: 1;
+}
+
+/* Textarea */
+textarea {
+    height: 80px;
+    resize: none;
+}
+
+/* Advanced Section */
+.advance {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 5px;
+    background: #F2E2B1;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.details {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.details div {
+    flex: 1;
+}
+
+/* Dimension Input */
+#dimension {
+    display: flex;
+    gap: 5px;
+}
+
+#dimension input {
+    flex: 1;
+}

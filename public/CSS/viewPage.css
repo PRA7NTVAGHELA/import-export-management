@@ -1,0 +1,131 @@
+/* General Container */
+.container {
+    width: 80%;
+    margin: auto;
+}
+
+/* Top Bar */
+.top-bar {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* Top Bar Buttons */
+.top-bar a {
+    color: inherit;
+    padding: 8px 12px;
+    border: 1px solid #BDB395;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    background-color: #D5C7A3;
+    transition: background 0.3s ease-in-out;
+}
+
+.top-bar a:hover {
+    background-color: #BDB395;
+}
+
+/* Search Box */
+.search-box {
+    padding: 8px 12px;
+    border: 1px solid #D5C7A3;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 200px;
+    background: rgb(246, 240, 240);
+    color: #2A2A3D;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    transition: opacity 0.3s ease;
+}
+
+/* Button Colors */
+.add-btn {
+    background-color: #D5C7A3; /* Soft Brown */
+}
+
+.export-btn {
+    background-color: #BDB395; /* Slightly darker brown */
+}
+
+.import-btn {
+    background-color: rgb(213, 199, 163);
+}
+
+.action-btn {
+    background-color: rgb(189, 179, 149);
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* Table Layout */
+.table-container {
+    display: grid;
+    grid-template-columns: 50px 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    align-items: center;
+    background-color: #F2E2B1;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+/* Table Headers */
+.header {
+    padding: 12px 10px;
+    font-weight: bold;
+    background-color: #F6F0F0;
+    border-bottom: 2px solid #D5C7A3;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+.header:nth-child(n+2) {
+    border-left: 1px solid #BDB395; /* Add separator between columns */
+}
+
+/* Last Button Section */
+.last-button {
+    display: flex;
+    justify-content: space-around;
+}
+
+.last-button a {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.last-button button {
+    padding: 5px 10px;
+    border: 1px solid #BDB395;
+    background: rgb(242, 226, 177);
+    color: #2A2A3D;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.last-button button:hover {
+    background: rgb(213, 199, 163);
+}
