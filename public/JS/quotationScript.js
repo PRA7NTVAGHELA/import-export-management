@@ -285,23 +285,23 @@ function openMailForm(quotationId) {
 
     // Add the form HTML
     mailFormContainer.innerHTML = `
-        <h3>Send Email</h3>
-        <form id="sendMailForm">
-            <div style="margin-bottom: 15px;">
-                <label for="subject">Subject *</label>
-                <input type="text" id="subject" name="subject" value="Proforma Invoice Attached for Your Review" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label for="receiverEmail">Receiver Email ID *</label>
-                <input type="email" id="receiverEmail" name="receiverEmail" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label for="ccEmail">CC Email</label>
-                <input type="email" id="ccEmail" name="ccEmail" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label for="content">Content</label>
-                <textarea id="content" name="content" style="width: 100%; height: 150px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; resize: vertical;" required>Dear Sir,
+    <h3>Send Email</h3>
+    <form id="sendMailForm" enctype="multipart/form-data">
+        <div style="margin-bottom: 15px;">
+            <label for="subject">Subject *</label>
+            <input type="text" id="subject" name="subject" value="Proforma Invoice Attached for Your Review" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label for="receiverEmail">Receiver Email ID *</label>
+            <input type="email" id="receiverEmail" name="receiverEmail" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label for="ccEmail">CC Email</label>
+            <input type="email" id="ccEmail" name="ccEmail" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label for="content">Content</label>
+            <textarea id="content" name="content" style="width: 100%; height: 150px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; resize: vertical;" required>Dear Sir,
 
 We are attaching the Proforma Invoice No PI/23/24B-25 dtd 06/03/2025 for TCM CHLOROFORM (10,000 LT) CIF NAURU.
 
@@ -309,17 +309,22 @@ Please arrange to send SIGNED Proforma Invoice.
 
 Thanks & Regards,
 Test Server</textarea>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label for="attachment">Attachment</label>
-                <div id="attachmentArea">Fetching PDF...</div>
-            </div>
-            <div style="text-align: right;">
-                <button type="button" onclick="closeMailForm()" style="padding: 8px 16px; background-color: #ff4d4d; color: white; border: none; border-radius: 4px; margin-right: 10px; cursor: pointer;">Close</button>
-                <button type="submit" style="padding: 8px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Send Email</button>
-            </div>
-        </form>
-    `;
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label for="attachment">Attachment (S3 PDF)</label>
+            <div id="attachmentArea">Fetching PDF...</div>
+        </div>
+        <div style="margin-bottom: 15px;">
+            <label for="additionalAttachments">Additional Attachments</label>
+            <input type="file" id="additionalAttachments" name="attachments" multiple style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <div id="attachmentList" style="margin-top: 10px;"></div>
+        </div>
+        <div style="text-align: right;">
+            <button type="button" onclick="closeMailForm()" style="padding: 8px 16px; background-color: #ff4d4d; color: white; border: none; border-radius: 4px; margin-right: 10px; cursor: pointer;">Close</button>
+            <button type="submit" style="padding: 8px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Send Email</button>
+        </div>
+    </form>
+`;
 
     // Append the form to the body
     document.body.appendChild(mailFormContainer);
@@ -353,11 +358,11 @@ function closeMailForm() {
 // Function to fetch PDF from S3
 async function fetchPDFFromS3(quotationId) {
     try {
-        console.log("Fetching PDF for Quotation ID:", quotationId); // Debugging
+        
         const response = await fetch(`/api/getS3Url?quotationId=${quotationId}`);
-        console.log("API Response Status:", response.status); // Debugging
+        
         const data = await response.json();
-        console.log("API Response Data:", data); // Debugging
+        // Debugging
 
         if (data.success && data.url) {
             const attachmentArea = document.querySelector("#attachmentArea");
@@ -376,29 +381,26 @@ async function fetchPDFFromS3(quotationId) {
     }
 }
 
-// Function to send the email
+
 // Function to send the email
 async function sendEmail(form, quotationId) {
     const formData = new FormData(form);
     const attachmentUrl = document.querySelector("#attachmentArea").getAttribute("data-file-url");
 
-    const emailData = {
-        subject: formData.get("subject"),
-        receiverEmail: formData.get("receiverEmail"),
-        ccEmail: formData.get("ccEmail"),
-        content: formData.get("content"),
-        attachment: attachmentUrl,
-        quotationId: quotationId,
-    };
+    // Add quotationId to FormData (since it's not in the form directly)
+    formData.set("quotationId", quotationId);
+
+    // Optionally add attachmentUrl if needed by the backend (though it's typically handled via S3)
+    if (attachmentUrl) {
+        formData.set("attachmentUrl", attachmentUrl);
+    }
 
     try {
-        console.log("Sending email with data:", emailData); // Debugging
+        console.log("Sending email with FormData entries:", Array.from(formData.entries()).map(([key, value]) => ({ key, value: value instanceof File ? value.name : value }))); // Debugging
         const response = await fetch("/api/sendEmail", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(emailData),
+            // Remove Content-Type header to let the browser set multipart/form-data
+            body: formData,
         });
         console.log("API Response Status:", response.status); // Debugging
         const result = await response.json();
@@ -414,3 +416,60 @@ async function sendEmail(form, quotationId) {
         console.error("Error sending email:", error);
     }
 }
+
+
+const fileInput = mailFormContainer.querySelector("#additionalAttachments");
+const attachmentList = mailFormContainer.querySelector("#attachmentList");
+
+// Function to update the attachment list
+const updateAttachmentList = () => {
+    console.log("Updating attachment list...");
+    attachmentList.innerHTML = ""; // Clear previous list
+    const files = fileInput.files;
+    console.log("Selected files:", files.length, Array.from(files).map(f => f.name));
+
+    for (let i = 0; i < files.length; i++) {
+        const fileDiv = document.createElement("div");
+        fileDiv.style.cssText = "display: flex; align-items: center; margin: 5px 0;";
+        fileDiv.innerHTML = `
+            <span style="flex-grow: 1;">${files[i].name} (${(files[i].size / 1024).toFixed(2)} KB)</span>
+            <button type="button" class="remove-attachment" data-index="${i}" style="background-color: #ff4d4d; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer;">Remove</button>
+        `;
+        attachmentList.appendChild(fileDiv);
+    }
+
+    // Add remove functionality
+    const removeButtons = attachmentList.querySelectorAll(".remove-attachment");
+    console.log("Remove buttons found:", removeButtons.length);
+    removeButtons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const index = parseInt(e.target.getAttribute("data-index"));
+            console.log("Removing file at index:", index);
+
+            // Create a new FileList excluding the removed file
+            const dataTransfer = new DataTransfer();
+            const newFiles = Array.from(fileInput.files).filter((_, i) => i !== index);
+            newFiles.forEach((file) => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files; // Update the file input
+            console.log("Updated files after removal:", Array.from(fileInput.files).map(f => f.name));
+
+            // Manually trigger the change event to refresh the list
+            const changeEvent = new Event("change", { bubbles: true });
+            fileInput.dispatchEvent(changeEvent);
+        });
+    });
+};
+
+// Add the change event listener to the file input
+fileInput.addEventListener("change", updateAttachmentList);
+
+// Handle form submission
+const form = mailFormContainer.querySelector("#sendMailForm");
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    console.log("Form submitted for Quotation ID:", quotationId);
+    console.log("Files in FormData:", Array.from(formData.getAll("attachments")).map(f => f.name));
+    await sendEmail(formData, quotationId);
+});
+

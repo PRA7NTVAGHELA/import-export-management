@@ -11,6 +11,7 @@ import quotationProductSchema from '../model/quotationProductSchema.js';
 import ExcelJS from "exceljs";
 import { join } from 'path';
 import nodemailer from 'nodemailer';
+import multer from 'multer';
 
 
 import { readFile } from 'fs/promises';
@@ -24,6 +25,9 @@ import ejs from 'ejs'
 import pkg from 'number-to-words';
 const {toWords} = pkg
 
+
+
+
 const splitProductId = (productIdString) => {
     if (typeof productIdString === "string" && productIdString.includes("-")) {
         const [product_id, variant_id] = productIdString.split("-").map(num => parseInt(num, 10));
@@ -32,6 +36,10 @@ const splitProductId = (productIdString) => {
     return { product_id: parseInt(productIdString, 10), variant_id: null };
 };
 
+
+// Configure multer for file uploads
+const storage = multer.memoryStorage(); // Store files in memory for now
+const upload = multer({ storage: storage });
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -793,51 +801,70 @@ export const getS3Url = async (req, res) => {
 };
 
 // Send email with attachment
-export const sendEmail = async (req, res) => {
-    const { subject, receiverEmail, ccEmail, content, quotationId } = req.body;
-    console.log("Received email data:", { subject, receiverEmail, ccEmail, content, quotationId });
-
-    try {
-        const bucket = process.env.AWS_S3_BUCKET_NAME;
-        if (!bucket) {
-            throw new Error("S3_BUCKET environment variable is not set");
-        }
-        const params = {
-            Bucket: bucket,
-            Key: `quotations/invoice_${quotationId}.pdf`,
-        };
+export const sendEmail = [
+    upload.array("attachments", 10), // Middleware to handle up to 10 files
+    async (req, res) => {
+        const { subject, receiverEmail, ccEmail, content, quotationId } = req.body;
         
-        const s3File = await s3.getObject(params).promise();
-      
 
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: receiverEmail,
-            cc: ccEmail || "",
-            subject: subject,
-            text: content,
-            attachments: [
-                {
-                    filename: `Quotation_${quotationId}.pdf`,
-                    content: s3File.Body,
-                    contentType: "application/pdf",
-                },
-            ],
-        };
-        console.log("MailOptions:", {
-            from: mailOptions.from,
-            to: mailOptions.to,
-            cc: mailOptions.cc,
-            subject: mailOptions.subject,
-            text: mailOptions.text,
-            attachment: !!mailOptions.attachments[0].content,
-        });
+        try {
+            const bucket = process.env.AWS_S3_BUCKET_NAME;
+            if (!bucket) {
+                throw new Error("AWS_S3_BUCKET_NAME environment variable is not set");
+            }
 
-        const info = await transporter.sendMail(mailOptions);
-        console.log("Email sent successfully. Info:", info);
-        res.json({ success: true, message: "Email sent successfully" });
-    } catch (error) {
-        console.error("Email Sending Error:", error);
-        res.status(500).json({ success: false, message: "Error sending email: " + error.message });
-    }
-};
+            // Retrieve S3 file
+            const params = {
+                Bucket: bucket,
+                Key: `quotations/invoice_${quotationId}.pdf`,
+            };
+           
+            const s3File = await s3.getObject(params).promise();
+            
+
+            // Prepare mail options with S3 attachment
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: receiverEmail,
+                cc: ccEmail || "",
+                subject: subject,
+                text: content,
+                attachments: [
+                    {
+                        filename: `Quotation_${quotationId}.pdf`,
+                        content: s3File.Body,
+                        contentType: "application/pdf",
+                    },
+                ],
+            };
+
+            // Add user-uploaded files to attachments
+            if (req.files && req.files.length > 0) {
+                req.files.forEach((file) => {
+                    mailOptions.attachments.push({
+                        filename: file.originalname,
+                        content: file.buffer,
+                        contentType: file.mimetype,
+                    });
+                });
+                
+            }
+
+            console.log("MailOptions:", {
+                from: mailOptions.from,
+                to: mailOptions.to,
+                cc: mailOptions.cc,
+                subject: mailOptions.subject,
+                text: mailOptions.text,
+                attachmentCount: mailOptions.attachments.length,
+            });
+
+            const info = await transporter.sendMail(mailOptions);
+            console.log("Email sent successfully. Info:", info);
+            res.json({ success: true, message: "Email sent successfully" });
+        } catch (error) {
+            console.error("Email Sending Error:", error);
+            res.status(500).json({ success: false, message: "Error sending email: " + error.message });
+        }
+    },
+];
